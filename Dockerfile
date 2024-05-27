@@ -15,9 +15,10 @@ RUN apt-get update && apt-get install -y \
     git-core \
     libsodium-dev \
     libmagickwand-dev --no-install-recommends \
-    && pecl install imagick \
-    && docker-php-ext-enable imagick
+    ssh
 
+RUN pecl install imagick
+RUN docker-php-ext-enable imagick
 RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ && docker-php-ext-install gd
 
 RUN docker-php-ext-install intl
@@ -27,8 +28,6 @@ RUN docker-php-ext-install pdo pdo_mysql
 RUN docker-php-ext-install soap
 RUN docker-php-ext-install bcmath
 RUN docker-php-ext-install sodium
-
-# "sockets" is only necessary for Magento >= 2.4 but apparently Magento Commerce (EE) 2.3 requires it as well
 RUN docker-php-ext-install sockets
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
